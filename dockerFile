@@ -1,0 +1,9 @@
+# Node server
+FROM node:12-alpine
+WORKDIR /usr/src/app
+COPY index.html .
+COPY index.js .
+COPY package.json .
+RUN npm install --production --silent --no-package-lock
+EXPOSE 3000
+CMD ["node", "index.js"]

@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Websocket Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+        integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: 0.5%;
+        }
+
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container body-content">
+        <div class="container">
+            <div class="row justify-content-start" style="padding-top:10px;">
+                <div class="col" style="padding-top:10px;">
+                    <h1>Welcome to my game!</h1>
+                </div>
+            </div>
+            <div class="row justify-content-start" style="padding-top:10px;">
+                <div class="col" style="padding-top:10px;">
+                    <div class="row justify-content-start" style="padding-top:10px;">
+                        <label>
+                            <h4> Current score : <span id="score"></span></h4>
+                        </label>
+                    </div>
+                    <div class="row justify-content-start" style="padding-top:10px;">
+                        <label>
+                            <h4>Key to press : <span id="key"></span></h4>
+                        </label>
+                    </div>
+                    <div class="row justify-content-start" style="padding-top:10px;">
+                        <label>
+                            <h5> counter : <span id="counter"></span></h5>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-start" style="padding-top:10px;">
+                <input id="m" class="form-control" placeholder="Enter Key here (case sensitive)"></input>
+            </div>
+            <div class="row justify-content-start" style="padding-top:10px;">
+                <h3 style="color: green;"> <span id="won"></span></h3>
+                <h3 style="color: lightcoral;"> <span id="lost"></span></h3>
+            </div>
+            <div class="row justify-content-start" style="padding-top:10px;">
+                <h5><span id="message"></span></h5>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function () {
+            var socket = io();
+            $('#m').on('change', function (e) {
+                e.preventDefault(); // prevents page reloading
+                socket.emit('input', $('#m').val());
+                $('#m').val('');
+                return false;
+            });
+            socket.on('key', function (msg) {
+                $('#key').text(msg);
+            });
+            socket.on('score', function (msg) {
+                $('#score').text(msg);
+            });
+            socket.on('counter', function (msg) {
+                $('#counter').text(msg);
+            });
+            socket.on('won', function (msg) {
+                $('#won').text(msg);
+            });
+            socket.on('lost', function (msg) {
+                $('#lost').text(msg);
+            });
+            socket.on('message', function (msg) {
+                $('#message').text(msg);
+                socket.close();
+            });
+        });
+    </script>
+</body>
+
+</html>
